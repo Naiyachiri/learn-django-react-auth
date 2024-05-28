@@ -22,3 +22,4 @@ RUN pip install --upgrade pip \
     # Install dependencies to the system instead of venv
     && poetry config virtualenvs.create false
 
+RUN poetry install -n --no-ansi
