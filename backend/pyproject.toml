@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "django-react-auth"
+name = "djangocookieauth"
 version = "0.1.0"
-description = "Tutorial to learn how to authenticate with django and a SPA"
-authors = ["James Bui <jamesvo.bui@core4ce.com>"]
+description = ""
+authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
