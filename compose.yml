@@ -1,8 +1,6 @@
 services:
   backend:
-    build:
-      context: backend
-      target: backend
+    build: ./backend
     expose:
       - 8000
     volumes:
@@ -22,7 +20,7 @@ services:
     depends_on:
       - backend
 
-  reverse_proxy:
+  proxy:
     build: ./nginx
     ports:
       - 81:80
