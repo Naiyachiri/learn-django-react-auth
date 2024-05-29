@@ -10,35 +10,37 @@ from rest_framework.views import APIView
 
 
 def get_csrf(request):
-    response = JsonResponse({'detail': 'CSRF cookie set'})
-    response['X-CSRFToken'] = get_token(request)
+    response = JsonResponse({"detail": "CSRF cookie set"})
+    response["X-CSRFToken"] = get_token(request)
     return response
 
 
 @require_POST
 def login_view(request):
     data = json.loads(request.body)
-    username = data.get('username')
-    password = data.get('password')
+    username = data.get("username")
+    password = data.get("password")
 
     if username is None or password is None:
-        return JsonResponse({'detail': 'Please provide username and password.'}, status=400)
+        return JsonResponse(
+            {"detail": "Please provide username and password."}, status=400
+        )
 
     user = authenticate(username=username, password=password)
 
     if user is None:
-        return JsonResponse({'detail': 'Invalid credentials.'}, status=400)
+        return JsonResponse({"detail": "Invalid credentials."}, status=400)
 
     login(request, user)
-    return JsonResponse({'detail': 'Successfully logged in.'})
+    return JsonResponse({"detail": "Successfully logged in."})
 
 
 def logout_view(request):
     if not request.user.is_authenticated:
-        return JsonResponse({'detail': 'You\'re not logged in.'}, status=400)
+        return JsonResponse({"detail": "You're not logged in."}, status=400)
 
     logout(request)
-    return JsonResponse({'detail': 'Successfully logged out.'})
+    return JsonResponse({"detail": "Successfully logged out."})
 
 
 class SessionView(APIView):
@@ -47,13 +49,24 @@ class SessionView(APIView):
 
     @staticmethod
     def get(request, format=None):
-        return JsonResponse({'isAuthenticated': True})
+        return JsonResponse({"isAuthenticated": True})
+
+
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 class WhoAmIView(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # not applicable with simple jwt
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
-    @staticmethod
-    def get(request, format=None):
-        return JsonResponse({'username': request.user.username})
+    def get(self, request, format=None):
+        try:
+            username = request.user.username
+            return JsonResponse({"username": username})
+        except Exception as e:
+            # Return an error response
+            return JsonResponse({"error": "An error occurred"}, status=500)
