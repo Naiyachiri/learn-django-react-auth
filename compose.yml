@@ -1,0 +1,29 @@
+services:
+  backend:
+    build: ./backend
+    expose:
+      - 8000
+    volumes:
+      - ./backend:/usr/local/backend
+    command: python manage.py runserver 0.0.0.0:8000
+
+  frontend:
+    stdin_open: true
+    build: ./frontend
+    volumes:
+      - ./frontend:/usr/local/frontend
+      - /usr/local/frontend/node_modules
+    expose:
+      - 5173
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+
+  proxy:
+    build: ./nginx
+    ports:
+      - 81:80
+    depends_on:
+      - backend
+      - frontend
